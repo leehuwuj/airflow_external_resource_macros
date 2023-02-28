@@ -14,8 +14,26 @@ Approach 2:
 *Please make sure the environment for each resource type (file, http,...) are set.*
 
 ## Example:
+- Instead of putting long SQL like this:
 ```python
 SnowFakeOperator(
-    query="{{ macros.ext_resources.from_file('sql/a_ddl_file.sql') }}"
+    query="""
+    SELECT i, j
+    FROM
+         table1 AS t1 SAMPLE (25) 
+             INNER JOIN
+         table2 AS t2 SAMPLE (50)
+    WHERE t2.j = t1.i
+    ;
+    """
+)
+```
+
+- You can split the query content into dedicate .sql file, let say `a_file.sql`.
+
+- Now you can better using the macros syntax: `macros.ext_resources.from_file` that point to the sql file:
+```python
+SnowFakeOperator(
+    query="{{ macros.ext_resources.from_file('a_file.sql') }}"
 )
 ```
